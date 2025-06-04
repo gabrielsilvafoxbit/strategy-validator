@@ -1,28 +1,21 @@
+from exchanges.base_exchange import BaseExchange
 from exchanges.foxbit import Foxbit
 
 class ExchangeConnector:
     def __init__(self, exchange_name):
         self.exchange_name = exchange_name.lower()
-        self.foxbit = Foxbit()
+        self.exchange = None
+        if self.exchange_name == 'foxbit':
+            self.exchange = Foxbit()
+        elif self.exchange_name == 'binance':
+            self.exchange = Foxbit()
+        else:
+            raise ValueError(f"Exchange não suportada: {self.exchange_name}")
         # Aqui você implementaria a conexão real com a API da exchange
         # Esta é uma implementação mock para demonstração
         
     def get_balances(self):
-        if self.exchange_name == 'foxbit':
-            return self.foxbit.get_balances()
-
-        
-        # """Retorna saldos da exchange (mock)"""
-        # if self.exchange_name == 'foxbit':
-        #     return {'USDT': 1000.0, 'BRL': 5000.0}  # Valores de exemplo
-        # elif self.exchange_name == 'binance':
-        #     return {'USDT': 2000.0, 'BRL': 6000.0}
-        # elif self.exchange_name == 'okx':
-        #     return {'USDT': 3000.0, 'BRL': 7000.0}
-        # elif self.exchange_name == 'kucoin':
-        #     return {'USDT': 4000.0, 'BRL': 8000.0}
-        # else:
-        #     raise ValueError(f"Exchange não suportada: {self.exchange_name}")
+        return self.exchange.get_balances()
     
     def get_current_ticker(self, trading_pair):
         """Retorna preços atuais (mock)"""

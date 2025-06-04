@@ -7,6 +7,9 @@ import hashlib
 from urllib.parse import urlencode
 from typing import Dict, Optional, Any
 from .base_exchange import BaseExchange
+# from dotenv import load_dotenv
+
+# load_dotenv()
 
 api_key = os.getenv('FOXBIT_API_KEY')
 api_secret = os.getenv('FOXBIT_API_SECRET')
@@ -14,7 +17,6 @@ api_base_url = os.getenv('FOXBIT_API_URL')
 
 class Foxbit(BaseExchange):
     def __init__(self):
-        print(api_key, api_secret, api_base_url)
         super().__init__(api_key, api_secret, api_base_url)
         self.name = 'foxbit'
         
@@ -68,16 +70,11 @@ class Foxbit(BaseExchange):
     
     def get_balances(self) -> Dict[str, float]:
         """Obtém saldos da conta na Foxbit"""
-        response = self._request('GET', '/rest/v3/me')
-        
+        response = self._request('GET', '/rest/v3/accounts')
         balances = {}
-        for currency in response.get('currencies', []):
-            symbol = currency['symbol'].upper()
-            balances[symbol] = {
-                'available': float(currency['available']),
-                'total': float(currency['balance'])
-            }
-        
+        for currency in response.get('data', []):
+            symbol = currency['currency_symbol'].upper()
+            balances[symbol] = float(currency['balance_available'])
         return balances
     
     def get_ticker(self, trading_pair: str) -> Dict[str, float]:

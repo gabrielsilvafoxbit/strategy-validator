@@ -1,3 +1,4 @@
+
 class ConfigValidator:
     def __init__(self, config, maker_balance, taker_balance):
         self.config = config
@@ -22,7 +23,11 @@ class ConfigValidator:
     def _validate_balances(self):
         """Valida se os saldos são suficientes"""
         # Calcula o máximo teórico baseado nos fatores de configuração
-        taker_max = self.taker_balance['USDT'] * (self.config.get('order_size_taker_balance_factor', 99.5) / 100)
+
+        print(self.taker_balance.get('USDT', 0))
+        print(self.maker_balance.get('USDT', 0))
+
+        taker_max = self.taker_balance.get('USDT', 0) * (self.config.get('order_size_taker_balance_factor', 99.5) / 100)
         portfolio_total = self.maker_balance.get('USDT', 0) + self.taker_balance.get('USDT', 0)
         portfolio_max = portfolio_total * (self.config.get('order_size_portfolio_ratio_limit', 16.67) / 100)
         
@@ -31,10 +36,10 @@ class ConfigValidator:
         
         is_valid = current_amount <= max_recommended
         self.validations.append({
-            'name': 'Saldo suficiente',
+            'name': 'Amount',
             'status': is_valid,
-            'message': f"Saldo {'suficiente' if is_valid else 'insuficiente'}. "
-                       f"Atual: {current_amount} USDT, Máx recomendado: {max_recommended:.2f} USDT"
+            'message': f"{'válido' if is_valid else 'inválido'}. "
+                       f"Atual: {current_amount} USDT, Máx recomendado: {max_recommended:.2f} USDT, Saldo total(taker_max/saldo_total): {taker_max:.2f}/{portfolio_total:.2f} USDT."
         })
         
         if not is_valid:
@@ -47,21 +52,21 @@ class ConfigValidator:
     
     def _validate_order_amount(self):
         """Valida se o tamanho da ordem é apropriado"""
-        current_amount = self.config.get('order_amount', 0)
-        is_too_small = current_amount < 1  # Valor mínimo sugerido para ser rentável
+        order_amount = self.config.get('order_amount', 0)
+        is_too_small = order_amount < 0 # Valor mínimo sugerido para ser rentável
         
         self.validations.append({
             'name': 'Tamanho da ordem',
             'status': not is_too_small,
             'message': f"Tamanho da ordem {'adequado' if not is_too_small else 'muito pequeno'}. "
-                      f"Valor atual: {current_amount} USDT"
+                      f"Valor atual: {order_amount} USDT"
         })
         
         if is_too_small:
             self.suggestions.append({
                 'parameter': 'order_amount',
-                'current_value': current_amount,
-                'suggested_value': max(1, current_amount * 2),  # Sugere pelo menos 1 USDT
+                'current_value': order_amount,
+                'suggested_value': max(1, order_amount * 2),  # Sugere pelo menos 1 USDT
                 'reason': "Ordens muito pequenas podem não ser rentáveis após taxas"
             })
     

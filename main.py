@@ -1,8 +1,10 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from validator.config_loader import load_config, validate_config_structure
 from validator.exchange_connector import ExchangeConnector
 from validator.validator import ConfigValidator
 from validator.optimizer import ConfigOptimizer
-from dotenv import load_dotenv
 
 config_path = "strategy/xemm-v2.yml"
 
@@ -56,5 +58,4 @@ def main():
     print(f"\nValidação {'bem-sucedida' if validation_result['is_valid'] else 'com problemas'}")
 
 if __name__ == "__main__":
-    load_dotenv()
     main()
