@@ -1,0 +1,62 @@
+#######################
+###   None config   ###
+#######################
+
+strategy: cross_exchange_market_making_multiple
+
+# The name of the maker exchange connector.
+maker_market: foxbit
+
+# The name of the taker exchange connector.
+taker_market: binance
+
+# The name of the maker trading pair.
+maker_market_trading_pair: USDT-BRL
+
+# The name of the taker trading pair.
+taker_market_trading_pair: USDT-BRL
+
+# Number of orders in each side.
+n_orders: 1
+
+# Lower bound minimum profitability required to open a position.
+profitability_1: 2.0
+
+# Upper bound minimum profitability required to open a position (only applicable if n_orders >= 2).
+profitability_2: 3.0
+
+# The focal estimated profitability required to open a position (only applicable if n_orders >= 3).
+focal_profitability: 2.5
+
+# The strategy amount per order.
+order_amount: 1.9
+
+# The minimum random multiplier strategy amount per order.
+min_random_order_amount_multiplier: 1.0
+
+# Adjust order price to be one tick above the top bid or below the top ask.
+adjust_order_enabled: false
+
+# Refresh orders by cancellation or by letting them expire.
+order_refresh_mode: {}
+
+# Volume requirement for determining a possible top bid or ask price from the order book.
+top_depth_tolerance: 1000.0
+
+# Minimum time limit between two subsequent order adjustments.
+anti_hysteresis_duration: 30.0
+
+# Taker order size as a percentage of volume.
+order_size_taker_volume_factor: 25.0
+
+# Taker order size as a percentage of the available balance.
+order_size_taker_balance_factor: 99.5
+
+# Order size as a maker and taker account balance ratio.
+order_size_portfolio_ratio_limit: 16.67
+
+# Convert between different trading pairs using fixed conversion rates or using the rate oracle.
+conversion_rate_mode: {}
+
+# Allowed slippage to fill ensure taker orders are filled.
+slippage_buffer: 0.0
