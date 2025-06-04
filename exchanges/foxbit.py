@@ -19,25 +19,25 @@ class Foxbit(BaseExchange):
     def __init__(self):
         super().__init__(api_key, api_secret, api_base_url)
         self.name = 'foxbit'
-        
+
     def _sign_request(self, method: str, path: str, params: Optional[Dict] = None, body: Optional[Dict] = None) -> Dict[str, str]:
         """Implementa assinatura específica da Foxbit"""
         query_string = urlencode(params) if params else ''
         raw_body = json.dumps(body) if body else ''
         timestamp = str(int(time.time() * 1000))
-        
+
         pre_hash = f"{timestamp}{method.upper()}{path}{query_string}{raw_body}"
         signature = hmac.new(
             self.api_secret.encode(),
             pre_hash.encode(),
             hashlib.sha256
         ).hexdigest()
-        
+
         return {
             'signature': signature,
             'timestamp': timestamp
         }
-    
+
     def _request(self, method: str, path: str, params: Optional[Dict] = None, body: Optional[Dict] = None) -> Any:
         """Envia requisição para API Foxbit"""
         signed = self._sign_request(method, path, params, body)
@@ -47,16 +47,17 @@ class Foxbit(BaseExchange):
             'X-FB-ACCESS-SIGNATURE': signed['signature'],
             'Content-Type': 'application/json',
         }
-        
+
         url = f"{self.base_url}{path}"
-        
+
         try:
             response = requests.request(
                 method,
                 url,
                 params=params,
                 json=body,
-                headers=headers
+                headers=headers,
+                verify='/etc/ssl/certs/ca-certificates.crt'
             )
             response.raise_for_status()
             return response.json()
@@ -67,7 +68,7 @@ class Foxbit(BaseExchange):
             raise Exception(error_msg)
         except Exception as err:
             raise Exception(f"An error occurred: {err}")
-    
+
     def get_balances(self) -> Dict[str, float]:
         """Obtém saldos da conta na Foxbit"""
         response = self._request('GET', '/rest/v3/accounts')
@@ -76,24 +77,15 @@ class Foxbit(BaseExchange):
             symbol = currency['currency_symbol'].upper()
             balances[symbol] = float(currency['balance_available'])
         return balances
-    
+
     def get_ticker(self, trading_pair: str) -> Dict[str, float]:
         """Obtém cotações do par negociado"""
         # Foxbit usa o formato 'btcbrl' em vez de 'BTC-BRL'
         market_symbol = trading_pair.lower().replace('-', '')
         response = self._request('GET', f'/rest/v3/markets/{market_symbol}/ticker')
-        
+
         return {
             'bid': float(response['bid']),
             'ask': float(response['ask']),
             'last': float(response['last_price'])
         }
-
-        """Obtém ordens ativas"""
-        market_symbol = trading_pair.lower().replace('-', '')
-        params = {
-            'market_symbol': market_symbol,
-            'state': 'ACTIVE'
-        }
-        
-        return self._request('GET', '/rest/v3/orders', params=params)
