@@ -30,6 +30,13 @@ def main():
     all_suggestions = validation_result['suggestions'] + optimization_suggestions
     
     # Exibe resultados
+    print("\n====================================")
+
+    print(f"\nMaker Balance({config["maker_market"]}): ", maker_balance)
+    print(f"Taker Balance({config["taker_market"]}): ", taker_balance)
+
+    print("\n====================================")
+
     print("\n=== Resultados da Validação ===")
     for validation in validation_result['validations']:
         status = "✔" if validation['status'] else "✖"

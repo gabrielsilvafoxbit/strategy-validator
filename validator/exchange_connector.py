@@ -9,11 +9,11 @@ class ExchangeConnector:
         if self.exchange_name == 'foxbit':
             return {'USDT': 1000.0, 'BRL': 5000.0}  # Valores de exemplo
         elif self.exchange_name == 'binance':
-            return {'USDT': 2000.0}
+            return {'USDT': 2000.0, 'BRL': 6000.0}
         elif self.exchange_name == 'okx':
-            return {'USDT': 3000.0}
+            return {'USDT': 3000.0, 'BRL': 7000.0}
         elif self.exchange_name == 'kucoin':
-            return {'USDT': 4000.0}
+            return {'USDT': 4000.0, 'BRL': 8000.0}
         else:
             raise ValueError(f"Exchange não suportada: {self.exchange_name}")
     

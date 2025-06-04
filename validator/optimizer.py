@@ -22,7 +22,7 @@ class ConfigOptimizer:
             suggestions.append({
                 'parameter': 'profitability_1',
                 'current_value': self.config['profitability_1'],
-                'suggested_value': current_profit * 0.9,  # 10% abaixo do atual
+                'suggested_value': current_profit * 0.8,  # 10% abaixo do atual
                 'reason': f"Rentabilidade atual do mercado ({current_profit:.2f}%) abaixo do mínimo configurado"
             })
         
@@ -42,6 +42,14 @@ class ConfigOptimizer:
                 'current_value': 1,
                 'suggested_value': 2,
                 'reason': "Múltiplas ordens podem capturar mais oportunidades de arbitragem"
+            })
+        
+        if self.config.get('order_size_taker_balance_factor', 99.5) < 95:
+            suggestions.append({
+                'parameter': 'order_size_taker_balance_factor',
+                'current_value': self.config.get('order_size_taker_balance_factor', 99.5),
+                'suggested_value': 95,
+                'reason': "Sem taxas, pode usar mais do saldo disponível"
             })
         
         return suggestions

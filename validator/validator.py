@@ -48,7 +48,7 @@ class ConfigValidator:
     def _validate_order_amount(self):
         """Valida se o tamanho da ordem é apropriado"""
         current_amount = self.config.get('order_amount', 0)
-        is_too_small = current_amount < 10  # Valor mínimo sugerido para ser rentável
+        is_too_small = current_amount < 1  # Valor mínimo sugerido para ser rentável
         
         self.validations.append({
             'name': 'Tamanho da ordem',
@@ -61,14 +61,14 @@ class ConfigValidator:
             self.suggestions.append({
                 'parameter': 'order_amount',
                 'current_value': current_amount,
-                'suggested_value': max(10, current_amount * 2),  # Sugere pelo menos 10 USDT
+                'suggested_value': max(1, current_amount * 2),  # Sugere pelo menos 1 USDT
                 'reason': "Ordens muito pequenas podem não ser rentáveis após taxas"
             })
     
     def _validate_profitability(self):
         """Valida se a rentabilidade mínima é realista"""
         profitability = self.config.get('profitability_1', 0)
-        is_low = profitability < 1.5  # Consideramos abaixo de 1.5% muito baixo
+        is_low = profitability < 0.5  # Consideramos abaixo de 0.5% muito baixo
         
         self.validations.append({
             'name': 'Rentabilidade mínima',
@@ -81,7 +81,7 @@ class ConfigValidator:
             self.suggestions.append({
                 'parameter': 'profitability_1',
                 'current_value': profitability,
-                'suggested_value': max(2.0, profitability),  # Sugere pelo menos 2%
+                'suggested_value': max(1.0, profitability),  # Sugere pelo menos 1%
                 'reason': "Rentabilidade mínima muito baixa pode não cobrir taxas e oscilações"
             })
     
