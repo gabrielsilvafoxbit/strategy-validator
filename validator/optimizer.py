@@ -52,4 +52,12 @@ class ConfigOptimizer:
                 'reason': "Sem taxas, pode usar mais do saldo disponível"
             })
         
+        if self.config.get('order_size_taker_balance_factor', 99.5) > 80:
+            suggestions.append({
+                'parameter': 'order_size_taker_balance_factor',
+                'current_value': self.config.get('order_size_taker_balance_factor', 99.5),
+                'suggested_value': 80,
+                'reason': "Utilizar mais de 80% do saldo aumenta muito o risco"
+            })
+    
         return suggestions
