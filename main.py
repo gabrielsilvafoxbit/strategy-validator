@@ -30,24 +30,25 @@ def main():
     optimization_suggestions = optimizer.optimize_config()
 
     # Combina todas as sugestões
-    all_suggestions = validation_result['suggestions'] + optimization_suggestions
+    all_suggestions = validation_result['suggestions']
 
     # Exibe resultados
-    print("\n====================================")
-
-    print(f'\nMaker Balance({config["maker_market"]}): ', maker_balance)
-    print(f'Taker Balance({config["taker_market"]}): ', taker_balance)
-
-    print("\n====================================")
-
     print("\n=== Resultados da Validação ===")
     for validation in validation_result['validations']:
         status = "✔" if validation['status'] else "✖"
         print(f"{status} {validation['name']}: {validation['message']}")
 
     if all_suggestions:
-        print("\n=== Sugestões de Otimização ===")
+        print("\n=== Correções a serem feitas ===")
         for suggestion in all_suggestions:
+            print(f"\nParâmetro: {suggestion['parameter']}")
+            print(f"Valor atual: {suggestion['current_value']}")
+            print(f"Sugestão: {suggestion['suggested_value']}")
+            print(f"Motivo: {suggestion['reason']}")
+
+        print("\n=== Sugestões ===")
+
+        for suggestion in optimization_suggestions:
             print(f"\nParâmetro: {suggestion['parameter']}")
             print(f"Valor atual: {suggestion['current_value']}")
             print(f"Sugestão: {suggestion['suggested_value']}")
